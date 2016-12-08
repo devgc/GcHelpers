@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 import sys
 import argparse
+import logging
+
 try:
-    from helpers.db.DbHandler import DbConfig
-    from helpers.writers.OutputWriter import OutputWriter
+    from gchelpers.db.DbHandler import DbConfig
+    from gchelpers.writers.OutputWriter import OutputWriter
 except:
     sys.path.append('..')
-    from helpers.db.DbHandler import DbConfig
-    from helpers.writers.OutputWriter import OutputWriter
+    from gchelpers.db.DbHandler import DbConfig
+    from gchelpers.writers.OutputWriter import OutputWriter
 
 def GetArguements():
     '''Get needed options for processing'''
