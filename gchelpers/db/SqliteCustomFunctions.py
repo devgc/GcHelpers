@@ -15,7 +15,7 @@ def RegisterSQLiteFunctions(dbh):
     dbh.create_function("GetRegMatchArray", 3, GetRegMatchArray)
     dbh.create_function("RemoveNewLines", 1, RemoveNewLines)
 
-def Regexp(pattern, input):
+def Regexp(pattern,input):
     if input is None:
         return False
     
