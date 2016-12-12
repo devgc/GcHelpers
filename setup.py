@@ -12,8 +12,10 @@ setup(
     name='gchelpers',
     version='0.0.1',
     description='Collection of GC Helpers',
-    author='devgc',
+    author = 'G-C Partners, LLC',
+    author_email = 'dev@g-cpartners.com',
     url='https://github.com/devgc/GcHelpers',
+    download_url = 'https://github.com/devgc/GcHelpers/tarball/0.0.1',
     license="Apache Software License v2",
     zip_safe=False,
     install_requires=[
@@ -26,11 +28,9 @@ setup(
         'gchelpers': 'gchelpers',
         'geodb': 'geodb'
     },
-    data_files = [
-        ('geodb',[u'geodb/GeoLite2-City.mmdb'])
-    ],
     scripts=[
-        u'scripts/SQLiteQuery.py'
+        u'scripts/SQLiteQuery.py',
+        u'scripts/UpdateGeoIpDb.py'
     ],
     classifiers=[
         'Programming Language :: Python',
