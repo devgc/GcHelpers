@@ -10,10 +10,12 @@ GEO_MANAGER = GeoDbManager()
 
 def RegisterSQLiteFunctions(dbh):
     dbh.create_function("REGEXP", 2, Regexp)
-    dbh.create_function("GetIpInfo", 1, GetIpInfo)
     dbh.create_function("GetRegMatch", 3, GetRegMatch)
     dbh.create_function("GetRegMatchArray", 3, GetRegMatchArray)
     dbh.create_function("RemoveNewLines", 1, RemoveNewLines)
+    
+    if GEO_MANAGER.DB_ATTACHED:
+        dbh.create_function("GetIpInfo", 1, GetIpInfo)
 
 def Regexp(pattern,input):
     if input is None:

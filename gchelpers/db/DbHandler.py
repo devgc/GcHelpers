@@ -92,18 +92,14 @@ class DbHandler():
             row
         '''
         dbh = self.GetDbHandle()
-        dbh.create_function("REGEXP", 2, SqliteCustomFunctions.Regexp)
-        dbh.create_function("GetIpInfo", 1, SqliteCustomFunctions.GetIpInfo)
-        dbh.create_function("GetRegMatch", 3, SqliteCustomFunctions.GetRegMatch)
-        dbh.create_function("GetRegMatchArray", 3, SqliteCustomFunctions.GetRegMatchArray)
-        dbh.create_function("RemoveNewLines", 1, SqliteCustomFunctions.RemoveNewLines)
-        #SqliteCustomFunctions.RegisterSQLiteFunctions(dbh)
+        
+        if self.db_config.db_type == 'sqlite':
+            SqliteCustomFunctions.RegisterSQLiteFunctions(dbh)
         
         column_names = []
         
         if self.db_config.db_type == 'sqlite':
             # Register custom functions #
-            #RegisterSQLiteFunctions(dbh)
             
             if row_factory == type(dict):
                 dbh.row_factory = dict_factory
