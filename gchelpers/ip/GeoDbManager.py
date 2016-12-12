@@ -2,21 +2,32 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import gzip
+import shutil
 import imp
 import collections
 import time
 import logging
+import requests
+import json
+import pkg_resources
 import geoip2
 import geoip2.database
 from geoip2.errors import AddressNotFoundError
-import json
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 class GeoDbManager():
     def __init__(self):
         self.DB_ATTACHED = False
-        import pkg_resources
+        
+        package_dir = self._GetGeoDbDirectoryName()
+        self.AttachGeoDbs(package_dir)
+        
+        if not self.DB_ATTACHED:
+            logging.warn(u'No GeoDB found. Use GeoDbManager.AttachGeoDbs(geodb_path) or see documentation. GeoIP functionality will not be available.')
+            
+    def _GetGeoDbDirectoryName(self):
         package_dir = None
         
         try:
@@ -26,10 +37,62 @@ class GeoDbManager():
             
             if os.path.isdir(u'../geodb'):
                 package_dir = u'../geodb'
-            else:
-                logging.warn(u'No GeoDB found. Use GeoDbManager.AttachGeoDbs(geodb_path)')
+                
+        return package_dir
+    
+    def UpdateGoeIpDbs(self):
+        ''' Download a copy of the GeoLite Database
+        '''
+        url_geoip_country = u'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz'
+        path = self._GetGeoDbDirectoryName()
+        logging.info(u'GeoIP Folder: {}'.format(path))
+        filename_gz_geoip_country = os.path.join(
+            path,
+            u'GeoLite2-Country.mmdb.gz'
+        )
+        filename_geoip_country = os.path.join(
+            path,
+            u'GeoLite2-Country.mmdb'
+        )
         
-        self.AttachGeoDbs(package_dir)
+        # Print license requirement
+        self._CreateLicenseLink()
+        print('This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.')
+        request = requests.get(url_geoip_country, stream=True)
+        with open(filename_gz_geoip_country, 'wb') as fh:
+            for chunk in request.iter_content(chunk_size=1024): 
+                if chunk:
+                    fh.write(chunk)
+                    
+            fh.close()
+            
+        self._DeflateFile(
+            filename_gz_geoip_country,
+            filename_geoip_country
+        )
+        
+    def _CreateLicenseLink(self,path):
+        content = '''
+        The GeoLite2 databases are distributed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+        The attribution requirement may be met by including the following in all advertising and documentation mentioning
+        features of or use of this database:
+        This product includes GeoLite2 data created by MaxMind, available from http://www.maxmind.com.
+        
+        See license at https://creativecommons.org/licenses/by-sa/4.0/legalcode'''
+        filename = os.path.join(
+            path,
+            'CreativeCommonsLisense.txt'
+        )
+        with open(out_file, 'wb') as fh:
+            fh.write(content)
+        
+    def _DeflateFile(self,in_file,out_file):
+        with open(out_file, 'wb') as decompressed_gz:
+            with gzip.open(in_file, 'rb') as compressed_gz:
+                shutil.copyfileobj(
+                    compressed_gz,
+                    decompressed_gz
+                )
     
     def AttachGeoDbs(self,geodb_path):
         self.geodb_path = geodb_path
