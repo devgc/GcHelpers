@@ -15,7 +15,9 @@ import geoip2
 import geoip2.database
 from geoip2.errors import AddressNotFoundError
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO
+)
 
 class GeoDbManager():
     def __init__(self):
@@ -33,7 +35,7 @@ class GeoDbManager():
         try:
             package_dir = pkg_resources.resource_filename('geodb','.')
         except Exception as error:
-            logging.warn(u'{}'.format(error))
+            logging.warn(u'No resource {}'.format(str(error)))
             
             if os.path.isdir(u'../geodb'):
                 package_dir = u'../geodb'
@@ -43,23 +45,23 @@ class GeoDbManager():
     def UpdateGoeIpDbs(self):
         ''' Download a copy of the GeoLite Database
         '''
-        url_geoip_country = u'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz'
+        url_geoip_city = u'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz'
         path = self._GetGeoDbDirectoryName()
         logging.info(u'GeoIP Folder: {}'.format(path))
-        filename_gz_geoip_country = os.path.join(
+        filename_gz_geoip_city = os.path.join(
             path,
-            u'GeoLite2-Country.mmdb.gz'
+            u'GeoLite2-City.mmdb.gz'
         )
-        filename_geoip_country = os.path.join(
+        filename_geoip_city = os.path.join(
             path,
-            u'GeoLite2-Country.mmdb'
+            u'GeoLite2-City.mmdb'
         )
         
         # Print license requirement
-        self._CreateLicenseLink()
+        self._CreateLicenseLink(path)
         print('This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.')
-        request = requests.get(url_geoip_country, stream=True)
-        with open(filename_gz_geoip_country, 'wb') as fh:
+        request = requests.get(url_geoip_city, stream=True)
+        with open(filename_gz_geoip_city, 'wb') as fh:
             for chunk in request.iter_content(chunk_size=1024): 
                 if chunk:
                     fh.write(chunk)
@@ -67,8 +69,8 @@ class GeoDbManager():
             fh.close()
             
         self._DeflateFile(
-            filename_gz_geoip_country,
-            filename_geoip_country
+            filename_gz_geoip_city,
+            filename_geoip_city
         )
         
     def _CreateLicenseLink(self,path):
@@ -83,7 +85,7 @@ class GeoDbManager():
             path,
             'CreativeCommonsLisense.txt'
         )
-        with open(out_file, 'wb') as fh:
+        with open(filename, 'wb') as fh:
             fh.write(content)
         
     def _DeflateFile(self,in_file,out_file):
