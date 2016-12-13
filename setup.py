@@ -20,6 +20,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'geoip2',
+        'pyyaml'
     ],
     packages=find_packages(
         '.',
