@@ -31,6 +31,7 @@ setup(
     },
     scripts=[
         u'scripts/SQLiteQuery.py',
+        u'scripts/SQLiteToXlsx.py',
         u'scripts/UpdateGeoIpDb.py'
     ],
     classifiers=[
