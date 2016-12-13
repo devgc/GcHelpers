@@ -6,6 +6,44 @@ import os
 import datetime
 import logging
 
+class XlsxTemplateManager():
+    def __init__(self,template_directory):
+        '''Create a XlsxTemplateManager
+        args:
+            template_directory: path to where xlsx YAML templates reside
+        '''
+        self.template_directory = template_directory
+        
+    def CreateReports(self,db_config,output_folder):
+        '''Create reports based off of templates'''
+        template_files = []
+        
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+            
+        #Look in our template folder for yaml files#
+        for subdir, dirs, files in os.walk(self.template_directory):
+            for filename in files:
+                if filename.lower().endswith('.yml') or filename.lower().endswith('.yaml'):
+                    template_files.append(
+                        os.path.join(subdir,filename)
+                    )
+        
+        for template_filename in template_files:
+            template_basename = os.path.basename(template_filename)
+            print(u'Processing File {}'.format(template_basename))
+            
+            # Create our XlsxHandler
+            reporter = XlsxHandler(
+                template_filename,
+                outpath=output_folder
+            )
+            
+            # Write report
+            reporter.WriteReport(
+                db_config.GetDbHandler()
+            )
+
 class XlsxHandler():
     def __init__(self,yaml_template,outpath=None,outfile=None):
         '''Create XlsxHandler from template'''
@@ -31,7 +69,7 @@ class XlsxHandler():
             filename = self.outfile
         else:
             filename = os.path.join(
-                outpath,
+                self.outpath,
                 self.properties['workbook_name']
             )
         logging.debug('creating workbook {}'.format(filename))
