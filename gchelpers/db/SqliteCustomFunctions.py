@@ -26,7 +26,7 @@ def splitpath(fullpath):
 def RegisterSQLiteFunctions(dbh):
     dbh.create_function("REGEXP", 2, Regexp)
     dbh.create_function('Basename',1,Basename)
-    dbh.create_function('BasenameN',1,BasenameN)
+    dbh.create_function('BasenameN',2,BasenameN)
     dbh.create_function("GetRegMatch", 3, GetRegMatch)
     dbh.create_function("GetRegMatchArray", 3, GetRegMatchArray)
     dbh.create_function("RemoveNewLines", 1, RemoveNewLines)
