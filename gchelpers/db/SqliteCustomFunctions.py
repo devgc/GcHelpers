@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 import re
 import sys
 import json
@@ -8,20 +9,9 @@ from gchelpers.ip.GeoDbManager import GeoDbManager
 
 GEO_MANAGER = GeoDbManager()
 
-def splitpath(fullpath):
-    allparts = []
-    while 1:
-        parts = os.path.split(fullpath)
-        if parts[0] == fullpath:  # sentinel for absolute paths
-            allparts.insert(0, parts[0])
-            break
-        elif parts[1] == fullpath: # sentinel for relative paths
-            allparts.insert(0, parts[1])
-            break
-        else:
-            fullpath = parts[0]
-            allparts.insert(0, parts[1])
-    return allparts
+def splitpath(path, maxdepth=20):
+    ( head, tail ) = os.path.split(path)
+    return splitpath(head, maxdepth - 1) + [ tail ] if maxdepth and head and head != path else [ head or tail ]
 
 def RegisterSQLiteFunctions(dbh):
     dbh.create_function("REGEXP", 2, Regexp)
@@ -61,20 +51,23 @@ def Basename(fullname):
 def BasenameN(fullname,n):
     '''Get the base name of a fullname string'''
     value = ''
-    if fullname:
-        spitname = splitpath(fullname)
-        if spitname[0] == '':
-            spitname.pop(0)
-            
-        if len(spitname) < n:
-            value = os.path.join(
-                *spitname
-            )
-        else:
-            value = os.path.join(
-                *spitname[-(n):]
-            )
-            
+    if fullname is None:
+        return None
+    
+    splitname = splitpath(fullname,maxdepth=n)
+    
+    if splitname[0] == '':
+        splitname.pop(0)
+        
+    if len(splitname) < n:
+        value = os.path.join(
+            *splitname
+        )
+    else:
+        value = os.path.join(
+            *splitname[-(n):]
+        )
+        
     return value
     
 
