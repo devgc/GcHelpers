@@ -260,6 +260,11 @@ class XlsxHandler():
                     raise(Exception(u"'insert_cell' required. Worksheet {}".format(
                         worksheet_count
                     )))
+                
+                size_struct = attributes_struct.get('size',None)
+                if size_struct:
+                    chart.set_size(size_struct)
+                
                 worksheet.insert_chart(attributes_struct['insert_cell'], chart)
             else:
                 raise(Exception(u"Unhandled worksheet_type of {} at index {}".format(
