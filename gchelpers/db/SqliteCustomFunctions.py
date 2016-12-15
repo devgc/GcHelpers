@@ -10,6 +10,7 @@ from gchelpers.ip.GeoDbManager import GeoDbManager
 GEO_MANAGER = GeoDbManager()
 
 def splitpath(path, maxdepth=20):
+    # good path splitting solusion by http://nicks-liquid-soapbox.blogspot.com/2011/03/splitting-path-to-list-in-python.html
     ( head, tail ) = os.path.split(path)
     return splitpath(head, maxdepth - 1) + [ tail ] if maxdepth and head and head != path else [ head or tail ]
 
