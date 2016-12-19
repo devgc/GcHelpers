@@ -5,6 +5,7 @@ import re
 import sys
 import json
 import logging
+import sqlite3
 from gchelpers.ip.GeoDbManager import GeoDbManager
 
 GEO_MANAGER = GeoDbManager()
@@ -15,6 +16,7 @@ def splitpath(path, maxdepth=20):
     return splitpath(head, maxdepth - 1) + [ tail ] if maxdepth and head and head != path else [ head or tail ]
 
 def RegisterSQLiteFunctions(dbh):
+    sqlite3.enable_callback_tracebacks(True)
     dbh.create_function("REGEXP", 2, Regexp)
     dbh.create_function('Basename',1,Basename)
     dbh.create_function('BasenameN',2,BasenameN)
@@ -71,7 +73,6 @@ def BasenameN(fullname,n):
         
     return value
     
-
 def GetIpInfo(ip_address):
     if ip_address is None:
         return None
