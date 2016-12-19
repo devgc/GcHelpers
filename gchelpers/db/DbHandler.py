@@ -112,10 +112,7 @@ class DbHandler():
                 self.db_config['db_type']
             ))
         
-        try:
-            sql_c.execute(sql_string)
-        except Exception as error:
-            raise(error)
+        sql_c.execute(sql_string)
         
         for desc in sql_c.description:
             column_names.append(
