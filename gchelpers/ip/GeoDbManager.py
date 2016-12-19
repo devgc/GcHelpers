@@ -15,9 +15,9 @@ import geoip2
 import geoip2.database
 from geoip2.errors import AddressNotFoundError
 
-logging.basicConfig(
-    level=logging.INFO
-)
+logging.basicConfig()
+geodbmanger_logger = logging.getLogger(__name__)
+geodbmanger_logger.setLevel(logging.INFO)
 
 class GeoDbManager():
     def __init__(self):
@@ -27,7 +27,9 @@ class GeoDbManager():
         self.AttachGeoDbs(package_dir)
         
         if not self.DB_ATTACHED:
-            logging.warn(u'No GeoDB found. Use GeoDbManager.AttachGeoDbs(geodb_path) or see documentation. GeoIP functionality will not be available.')
+            geodbmanger_logger.info(u'No GeoDB found. Use GeoDbManager.AttachGeoDbs(geodb_path) or see documentation. GeoIP functionality will not be available.')
+        else:
+            geodbmanger_logger.info(u'GeoDB found.')
             
     def _GetGeoDbDirectoryName(self):
         package_dir = None
@@ -35,7 +37,7 @@ class GeoDbManager():
         try:
             package_dir = pkg_resources.resource_filename('geodb','.')
         except Exception as error:
-            logging.warn(u'No resource {}'.format(str(error)))
+            geodbmanger_logger.warn(u'No resource {}'.format(str(error)))
             
             if os.path.isdir(u'../geodb'):
                 package_dir = u'../geodb'
@@ -47,7 +49,7 @@ class GeoDbManager():
         '''
         url_geoip_city = u'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz'
         path = self._GetGeoDbDirectoryName()
-        logging.info(u'GeoIP Folder: {}'.format(path))
+        geodbmanger_logger.info(u'GeoIP Folder: {}'.format(path))
         filename_gz_geoip_city = os.path.join(
             path,
             u'GeoLite2-City.mmdb.gz'
@@ -100,13 +102,13 @@ class GeoDbManager():
         self.geodb_path = geodb_path
         self.city_reader = None
         
-        # logging.info('geodb_path: {}'.format(self.geodb_path))
+        # geodbmanger_logger.info('geodb_path: {}'.format(self.geodb_path))
         for root, subdirs, files in os.walk(self.geodb_path):
             for filename in files:
-                # logging.info('filename: {}'.format(filename))
+                # geodbmanger_logger.info('filename: {}'.format(filename))
                 if filename == 'GeoLite2-City.mmdb':
                     city_db = os.path.join(self.geodb_path,'GeoLite2-City.mmdb')
-                    # logging.info('city_db: {}'.format(city_db))
+                    # geodbmanger_logger.info('city_db: {}'.format(city_db))
                     self.city_reader = geoip2.database.Reader(city_db)
                     self.DB_ATTACHED = True
     
