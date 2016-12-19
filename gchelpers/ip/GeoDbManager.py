@@ -17,7 +17,6 @@ from geoip2.errors import AddressNotFoundError
 
 logging.basicConfig()
 geodbmanger_logger = logging.getLogger(__name__)
-geodbmanger_logger.setLevel(logging.INFO)
 
 class GeoDbManager():
     def __init__(self):
