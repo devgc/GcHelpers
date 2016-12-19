@@ -125,13 +125,14 @@ class XlsxHandler():
                 if check:
                     # Add Column Formats
                     column_formats = {}
-                    if attributes_struct['xlsx_column_formats']:
-                        for column_number in attributes_struct['xlsx_column_formats'].keys():
-                            if 'format' in attributes_struct['xlsx_column_formats'][column_number].keys():
+                    columnformats_struct = attributes_struct.get('xlsx_column_formats',None)
+                    if columnformats_struct:
+                        for column_number in columnformats_struct.keys():
+                            if 'format' in columnformats_struct[column_number].keys():
                                 column_formats[column_number] = workbook.add_format(
-                                    attributes_struct['xlsx_column_formats'][column_number]['format']
+                                    columnformats_struct[column_number]['format']
                                 )
-                    
+                                
                     # Write Records
                     column_cnt = 0
                     row_start = 1
@@ -153,17 +154,18 @@ class XlsxHandler():
                             formatter = None
                             
                             #Check for special treatment for column#
-                            if c_cnt in column_formats.keys():
-                                if 'format' in attributes_struct['xlsx_column_formats'][c_cnt].keys():
-                                    formatter = column_formats[c_cnt]
-                                
-                                if 'column_type' in attributes_struct['xlsx_column_formats'][c_cnt].keys():
-                                    '''Supported column_type's ['datetime']'''
-                                    if attributes_struct['xlsx_column_formats'][c_cnt]['column_type'] == 'datetime':
-                                        value = datetime.datetime.strptime(
-                                            str(value),
-                                            attributes_struct['xlsx_column_formats'][c_cnt]['strptime']
-                                        )
+                            if columnformats_struct:
+                                if c_cnt in column_formats.keys():
+                                    if 'format' in columnformats_struct[c_cnt].keys():
+                                        formatter = column_formats[c_cnt]
+                                    
+                                    if 'column_type' in columnformats_struct[c_cnt].keys():
+                                        '''Supported column_type's ['datetime']'''
+                                        if columnformats_struct[c_cnt]['column_type'] == 'datetime':
+                                            value = datetime.datetime.strptime(
+                                                str(value),
+                                                columnformats_struct[c_cnt]['strptime']
+                                            )
                                 
                             worksheet.write(
                                 row_num,
