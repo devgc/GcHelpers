@@ -119,7 +119,11 @@ class GeoDbManager():
                 ip_info['continent'] = city_info.continent.names['en']
                 ip_info['country'] = city_info.country.names['en']
                 ip_info['iso_code'] = city_info.country.iso_code
-            except AddressNotFoundError:
+            except AddressNotFoundError as error:
                 ip_info['ip'] = ip_address
+                ip_info['error'] = unicode(error)
+            except ValueError as error:
+                ip_info['ip'] = ip_address
+                ip_info['error'] = unicode(error)
             
         return ip_info
