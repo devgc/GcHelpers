@@ -7,6 +7,7 @@ import json
 import logging
 import sqlite3
 from gchelpers.ip.GeoDbManager import GeoDbManager
+from gchelpers.dt import DateTimeHandler 
 
 GEO_MANAGER = GeoDbManager()
 
@@ -23,9 +24,53 @@ def RegisterSQLiteFunctions(dbh):
     dbh.create_function("GetRegMatch", 3, GetRegMatch)
     dbh.create_function("GetRegMatchArray", 3, GetRegMatchArray)
     dbh.create_function("RemoveNewLines", 1, RemoveNewLines)
+    dbh.create_function("DtFormat", 2, DtFormat)
+    dbh.create_function("DtFormatTz", 4, DtFormatTz)
     
     if GEO_MANAGER.DB_ATTACHED:
         dbh.create_function("GetIpInfo", 1, GetIpInfo)
+        
+def DtFormatTz(dtstringin,newformat,current_tz_str,new_tz_str):
+    if dtstringin:
+        string_out = None
+        
+        # Get object from in string
+        datetime_obj = DateTimeHandler.DatetimeFromString(dtstringin)
+        
+        # Timezone Conversion
+        new_datetime_obj = DateTimeHandler.ConvertDatetimeTz(
+            datetime_obj,
+            current_tz_str,
+            new_tz_str
+        )
+        
+        # Format object
+        string_out = DateTimeHandler.StringFromDatetime(
+            new_datetime_obj,
+            newformat
+        )
+        
+        return string_out
+    
+    return None
+    
+def DtFormat(dtstringin,newformat):
+    if dtstringin:
+        string_out = None
+        
+        # Get object from in string
+        datetime_obj = DateTimeHandler.DatetimeFromString(dtstringin)
+        
+        # Format object
+        string_out = DateTimeHandler.StringFromDatetime(
+            datetime_obj,
+            newformat
+        )
+        
+        return string_out
+    
+    return None
+    
 
 def Regexp(pattern,input):
     if input is None:
