@@ -3,6 +3,8 @@
 import os
 import re
 import sys
+if __name__ == '__main__':
+    sys.path.append('../../')
 import json
 import logging
 import sqlite3
@@ -36,7 +38,7 @@ def RegisterSQLiteFunctions(dbh):
     
     if GEO_MANAGER.DB_ATTACHED:
         dbh.create_function("GetIpInfo", 1, GetIpInfo)
-        
+    
 def DtFormatTz(dtstringin,newformat,current_tz_str,new_tz_str):
     if dtstringin:
         string_out = None
@@ -81,7 +83,6 @@ def DtFormat(dtstringin,newformat):
         return string_out
     
     return None
-    
 
 def Regexp(pattern,input):
     if input is None:
@@ -113,20 +114,8 @@ def BasenameN(fullname,n):
     if fullname is None:
         return None
     
-    splitname = splitpath(fullname,maxdepth=n)
+    value = splitpath(fullname,n)
     
-    if splitname[0] == '':
-        splitname.pop(0)
-        
-    if len(splitname) < n:
-        value = os.path.join(
-            *splitname
-        )
-    else:
-        value = os.path.join(
-            *splitname[-(n):]
-        )
-        
     return value
     
 def GetIpInfo(ip_address):
@@ -171,3 +160,21 @@ def GetRegMatchArray(input,group,pattern):
         return json.dumps(hits)
     
     return json.dumps(hits)
+    
+def test1():
+    n = 2
+    fullname = "Partition 1\\TEST_P1 [NTFS]\\[root]\\testfolder002\\testfolder001\\testfile088.png"
+    splitname = splitpath(fullname,n)
+    
+    print splitname
+    
+def test2():
+    n = 2
+    fullname = "testfolder001\\testfile088.png"
+    splitname = splitpath(fullname,n)
+    
+    print splitname
+    
+if __name__ == '__main__':
+    test1()
+    test2()
