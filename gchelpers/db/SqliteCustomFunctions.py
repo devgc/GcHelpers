@@ -35,7 +35,9 @@ def DtFormatTz(dtstringin,newformat,current_tz_str,new_tz_str):
         string_out = None
         
         # Get object from in string
-        datetime_obj = DateTimeHandler.DatetimeFromString(dtstringin)
+        datetime_obj = DateTimeHandler.DatetimeFromString(
+            dtstringin
+        )
         
         # Timezone Conversion
         new_datetime_obj = DateTimeHandler.ConvertDatetimeTz(
@@ -59,7 +61,9 @@ def DtFormat(dtstringin,newformat):
         string_out = None
         
         # Get object from in string
-        datetime_obj = DateTimeHandler.DatetimeFromString(dtstringin)
+        datetime_obj = DateTimeHandler.DatetimeFromString(
+            dtstringin
+        )
         
         # Format object
         string_out = DateTimeHandler.StringFromDatetime(

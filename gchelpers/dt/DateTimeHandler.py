@@ -62,3 +62,11 @@ def test01():
     
     print datetime_obj
     print new_dt
+
+def test02():
+    test_string = '2017-Jan-11 15:16:27.467916 UTC'
+    
+# If this is ran as a script and not imported as a library
+if __name__ == '__main__':
+    test01()
+    
