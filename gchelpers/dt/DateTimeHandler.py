@@ -46,12 +46,11 @@ def StringFromDatetime(datetime_obj,out_format):
         datetime_string: representing our datetime object
     '''
     datetime_string = None
-    datetime_string = datetime_obj.strftime(out_format)
+    datetime_string = out_format.format(datetime_obj)
     
     return datetime_string
-    
-# If this is ran as a script and not imported as a library
-if __name__ == '__main__':
+
+def test01():
     test_string = '2015-Nov-09 21:53:26.265074 UTC'
     datetime_obj = DatetimeFromString(test_string)
     
