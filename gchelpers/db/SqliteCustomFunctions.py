@@ -11,10 +11,17 @@ from gchelpers.dt import DateTimeHandler
 
 GEO_MANAGER = GeoDbManager()
 
-def splitpath(path, maxdepth=20):
-    # good path splitting solusion by http://nicks-liquid-soapbox.blogspot.com/2011/03/splitting-path-to-list-in-python.html
-    ( head, tail ) = os.path.split(path)
-    return splitpath(head, maxdepth - 1) + [ tail ] if maxdepth and head and head != path else [ head or tail ]
+def splitpath(path, n):
+    path_array = re.split('[\\\/]',path)
+    start_index = -(n+1)
+    
+    # Check that path has enough elements
+    if abs(start_index) > len(path_array):
+        new_path = os.path.join(path_array[0],*path_array[1:])
+    else:
+        new_path = os.path.join(path_array[start_index],*path_array[start_index+1:])
+        
+    return new_path
 
 def RegisterSQLiteFunctions(dbh):
     sqlite3.enable_callback_tracebacks(True)
