@@ -90,3 +90,5 @@ ENV/
 
 geodb
 !geodb/*.py
+
+template_tests
