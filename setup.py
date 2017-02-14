@@ -20,7 +20,8 @@ setup(
     zip_safe=False,
     install_requires=[
         'geoip2',
-        'pyyaml'
+        'pyyaml',
+        'python-dateutil'
     ],
     packages=find_packages(
         '.',
