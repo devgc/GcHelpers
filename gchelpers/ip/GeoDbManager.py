@@ -19,8 +19,9 @@ logging.basicConfig()
 geodbmanger_logger = logging.getLogger(__name__)
 
 class GeoDbManager():
-    def __init__(self):
+    def __init__(self,geodb_path=None):
         self.DB_ATTACHED = False
+        self.geodb_path = geodb_path
         
         package_dir = self._GetGeoDbDirectoryName()
         self.AttachGeoDbs(package_dir)
@@ -33,21 +34,29 @@ class GeoDbManager():
     def _GetGeoDbDirectoryName(self):
         package_dir = None
         
-        try:
-            package_dir = pkg_resources.resource_filename('geodb','.')
-        except Exception as error:
-            geodbmanger_logger.warn(u'No resource {}'.format(str(error)))
-            
-            if os.path.isdir(u'../geodb'):
-                package_dir = u'../geodb'
+        if not self.geodb_path:
+            try:
+                package_dir = pkg_resources.resource_filename('geodb','.')
+            except Exception as error:
+                geodbmanger_logger.warn(u'No resource {}'.format(str(error)))
                 
+                if os.path.isdir(u'../geodb'):
+                    package_dir = u'../geodb'
+        else:
+            package_dir = self.geodb_path
+            
         return package_dir
     
-    def UpdateGoeIpDbs(self):
+    def UpdateGoeIpDbs(self,geodb_path=None):
         ''' Download a copy of the GeoLite Database
         '''
         url_geoip_city = u'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz'
-        path = self._GetGeoDbDirectoryName()
+        
+        if not geodb_path:
+            path = self._GetGeoDbDirectoryName()
+        else:
+            path = geodb_path
+            
         geodbmanger_logger.info(u'GeoIP Folder: {}'.format(path))
         filename_gz_geoip_city = os.path.join(
             path,
