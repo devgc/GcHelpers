@@ -6,6 +6,7 @@ import json
 import os
 import datetime
 import logging
+import traceback
 
 class XlsxTemplateManager():
     def __init__(self,template_directory):
@@ -40,10 +41,17 @@ class XlsxTemplateManager():
                 outpath=output_folder
             )
             
-            # Write report
-            reporter.WriteReport(
-                db_config.GetDbHandler()
-            )
+            # Attempt to Write report
+            try:
+                reporter.WriteReport(
+                    db_config.GetDbHandler()
+                )
+            except Exception as error:
+                logging.error(u"Unable to create report from template: {} [Error: {}] [Traceback: {}]".format(
+                    template_filename,
+                    unicode(error),
+                    traceback.format_exc()
+                ))
 
 class XlsxHandler():
     def __init__(self,yaml_template,outpath=None,outfile=None):
