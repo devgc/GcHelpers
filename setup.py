@@ -21,7 +21,7 @@ setup(
     install_requires=[
         'geoip2',
         'pyyaml',
-        'python-dateutil'
+        'python-dateutil==2.4.2'
     ],
     packages=find_packages(
         '.',
